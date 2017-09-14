@@ -1,0 +1,47 @@
+--- a/libgnome-desktop/gnome-rr.c
++++ b/libgnome-desktop/gnome-rr.c
+@@ -64,6 +64,7 @@
+     
+     char *		name;
+     char *		display_name;
++    char *		connector_type;
+     GnomeRRCrtc *	current_crtc;
+     GnomeRRCrtc **	possible_crtcs;
+     GnomeRROutput **	clones;
+@@ -1406,6 +1407,8 @@
+     g_variant_lookup (properties, "presentation", "b", &output->is_presentation);
+     g_variant_lookup (properties, "underscanning", "b", &output->is_underscanning);
+     g_variant_lookup (properties, "supports-underscanning", "b", &output->supports_underscanning);
++    g_variant_lookup (properties, "connector-type", "s", &output->connector_type);
++    g_message("%s output Connector-type:", output->connector_type);
+ 
+     if ((edid = g_variant_lookup_value (properties, "edid", G_VARIANT_TYPE ("ay"))))
+       {
+@@ -1447,6 +1450,7 @@
+     output->vendor = g_strdup (from->vendor);
+     output->product = g_strdup (from->product);
+     output->serial = g_strdup (from->serial);
++    output->connector_type = g_strdup(from->connector_type);
+     output->current_crtc = from->current_crtc;
+     output->backlight = from->backlight;
+     if (from->edid)
+@@ -1487,6 +1491,7 @@
+     g_free (output->modes);
+     g_free (output->possible_crtcs);
+     g_free (output->name);
++    g_free (output->connector_type);
+     g_free (output->vendor);
+     g_free (output->product);
+     g_free (output->serial);
+@@ -1695,7 +1700,10 @@
+ {
+     g_return_val_if_fail (output != NULL, FALSE);
+ 
+-    return _gnome_rr_output_name_is_builtin_display (output->name);
++    //TODO: add here if output->connector_type == default
++    //use _gnome_rr_output_name_is_builtin_display (output->name);
++
++    return _gnome_rr_output_name_is_builtin_display (output->connector_type);
+ }
+ 
+ /**
